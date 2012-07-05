@@ -86,6 +86,7 @@ PRODUCT_PACKAGES += \
     com.android.future.usb.accessory \
     DSPManager \
     libcyanogen-dsp \
+    audio_effects.conf \
     Trebuchet \
     FileManager \
     librs_jni \
@@ -95,7 +96,8 @@ PRODUCT_PACKAGES += \
     ROMControl \
     Torch \
     AppWidgetPicker \
-    GooManager
+    GooManager \
+    Apollo
 
 # Live Wallpapers
 PRODUCT_PACKAGES += \
