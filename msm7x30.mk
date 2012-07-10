@@ -96,8 +96,7 @@ PRODUCT_PACKAGES += \
     ROMControl \
     Torch \
     AppWidgetPicker \
-    GooManager \
-    Apollo
+    GooManager
 
 # Live Wallpapers
 PRODUCT_PACKAGES += \
