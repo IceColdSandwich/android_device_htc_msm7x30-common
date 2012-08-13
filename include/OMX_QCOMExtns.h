@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
-Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+Copyright (c) 2009-2012, Code Aurora Forum. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -40,9 +40,9 @@ extern "C" {
 *//*========================================================================*/
 
 
-//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 //                             Include Files
-//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 #include "OMX_Core.h"
 #include "OMX_Video.h"
 
@@ -251,9 +251,10 @@ enum OMX_QCOM_COLOR_FORMATTYPE
  *  by a factor of two both horizontally and vertically.
  */
     OMX_QCOM_COLOR_FormatYVU420SemiPlanar = 0x7FA30C00,
-    QOMX_COLOR_FormatYVU420PackedSemiPlanar32m4ka = 0x7FA30C01,
+    QOMX_COLOR_FormatYVU420PackedSemiPlanar32m4ka,
     QOMX_COLOR_FormatYUV420PackedSemiPlanar16m2ka,
-    QOMX_COLOR_FormatYUV420PackedSemiPlanar64x32Tile2m8ka
+    QOMX_COLOR_FormatYUV420PackedSemiPlanar64x32Tile2m8ka,
+    QOMX_COLOR_FormatAndroidOpaque = (OMX_COLOR_FORMATTYPE) OMX_COLOR_FormatVendorStartUnused  + 0x789,
 };
 
 enum OMX_QCOM_VIDEO_CODINGTYPE
@@ -349,9 +350,37 @@ enum OMX_QCOM_EXTN_INDEXTYPE
     OMX_QcomIndexParamVideoEncodeMetaBufferMode = 0x7F00001C,
 
     /*"OMX.google.android.index.useAndroidNativeBuffer2"*/
-    OMX_GoogleAndroidIndexUseAndroidNativeBuffer2 = 0x7F00001D
+    OMX_GoogleAndroidIndexUseAndroidNativeBuffer2 = 0x7F00001D,
 
+    /*"OMX.QCOM.index.param.VideoMaxAllowedBitrateCheck"*/
+    OMX_QcomIndexParamVideoMaxAllowedBitrateCheck = 0x7F00001E,
 };
+
+/**
+ * Extension index parameter.  This structure is used to enable
+ * vendor specific extension on input/output port and
+ * to pass the required flags and data, if any.
+ * The format of flags and data being passed is known to
+ * the client and component apriori.
+ *
+ * STRUCT MEMBERS:
+ *  nSize              : Size of Structure plus pData size
+ *  nVersion           : OMX specification version information
+ *  nPortIndex         : Indicates which port to set
+ *  bEnable            : Extension index enable (1) or disable (0)
+ *  nFlags             : Extension index flags, if any
+ *  nDataSize          : Size of the extension index data to follow
+ *  pData              : Extension index data, if present.
+ */
+typedef struct QOMX_EXTNINDEX_PARAMTYPE {
+    OMX_U32 nSize;
+    OMX_VERSIONTYPE nVersion;
+    OMX_U32 nPortIndex;
+    OMX_BOOL bEnable;
+    OMX_U32 nFlags;
+    OMX_U32 nDataSize;
+    OMX_PTR pData;
+} QOMX_EXTNINDEX_PARAMTYPE;
 
 /**
  * Enumeration used to define the video encoder modes
@@ -694,13 +723,12 @@ typedef struct QOMX_VIDEO_PARAM_DIVXTYPE {
     OMX_U32 nPortIndex;
     QOMX_VIDEO_DIVXFORMATTYPE eFormat;
     QOMX_VIDEO_DIVXPROFILETYPE eProfile;
-    OMX_PTR  pDrmHandle;     // DRM handle
 } QOMX_VIDEO_PARAM_DIVXTYPE;
 
 
 
 /**
- * VP Versions
+ *  VP Versions
  */
 typedef enum QOMX_VIDEO_VPFORMATTYPE {
     QOMX_VIDEO_VPFormatUnused = 0x01, /**< Format unused or unknown */
@@ -815,10 +843,25 @@ typedef struct QOMX_INDEXTIMESTAMPREORDER {
 	OMX_VERSIONTYPE nVersion;
 	OMX_U32 nPortIndex;
 	OMX_BOOL bEnable;
-};
+} QOMX_INDEXTIMESTAMPREORDER;
 
 #define OMX_QCOM_INDEX_PARAM_VIDEO_SYNCFRAMEDECODINGMODE "OMX.QCOM.index.param.video.SyncFrameDecodingMode"
 #define OMX_QCOM_INDEX_PARAM_INDEXEXTRADATA "OMX.QCOM.index.param.IndexExtraData"
+
+typedef enum {
+    QOMX_VIDEO_FRAME_PACKING_CHECKERBOARD = 0,
+    QOMX_VIDEO_FRAME_PACKING_COLUMN_INTERLEAVE = 1,
+    QOMX_VIDEO_FRAME_PACKING_ROW_INTERLEAVE = 2,
+    QOMX_VIDEO_FRAME_PACKING_SIDE_BY_SIDE = 3,
+    QOMX_VIDEO_FRAME_PACKING_TOP_BOTTOM = 4,
+    QOMX_VIDEO_FRAME_PACKING_TEMPORAL = 5,
+} QOMX_VIDEO_FRAME_PACKING_ARRANGEMENT;
+
+typedef enum {
+    QOMX_VIDEO_CONTENT_UNSPECIFIED = 0,
+    QOMX_VIDEO_CONTENT_LR_VIEW = 1,
+    QOMX_VIDEO_CONTENT_RL_VIEW = 2,
+} QOMX_VIDEO_CONTENT_INTERPRETATION;
 
 #ifdef __cplusplus
 }
